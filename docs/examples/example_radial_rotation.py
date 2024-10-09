@@ -14,6 +14,9 @@ def radial_rotation_fieldset(
     lon = np.linspace(0, 60, xdim, dtype=np.float32)
     lat = np.linspace(0, 60, ydim, dtype=np.float32)
 
+    lat[10]=1
+
+
     x0 = 30.0  # Define the origin to be the centre of the Field.
     y0 = 30.0
 

@@ -5,14 +5,15 @@ try:
     from parcels._version_setup import version
 except ModuleNotFoundError:
     try:
-        version = (
-            subprocess.check_output(
-                ["git", "-C", os.path.dirname(__file__), "describe", "--tags"],
-                stderr=subprocess.PIPE,
-            )
-            .decode("ascii")
-            .strip()
-        )
+        version = "2.4.2" # to do has to be changed, but no tags were available 
+        #version = (
+        #    subprocess.check_output(
+         #       ["git", "-C", os.path.dirname(__file__), "describe", "--tags"],
+          #      stderr=subprocess.PIPE,
+           # )
+            #.decode("ascii")
+            #.strip()
+        #)
     except subprocess.SubprocessError as e:
         e.add_note(
             "Looks like you're trying to do a development install of parcels. "
