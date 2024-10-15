@@ -1579,87 +1579,55 @@ class FieldSet:
     @staticmethod
     def checkIfLatLonMonotone(grid: Grid, name: str):
         """ Checks if the latitude and longitude values in the given grid are monotonically increasing.
-            If not: raise a warning.
+            If not, a warning is raised.
         
         Parameters:
-            grid (Grid): The grid object containing latitude and longitude attributes.
-            name (str): A descriptive name for the grid field, used in warning messages.
+        ----------
+            grid: Grid
+                The grid object containing longitude and latitude arrays.
+            name: str
+                A descriptive name for the grid field, used in warning messages.
         """
         if np.ndim(grid.lon)==1:
             auxiliaryArray = grid.lon
             indices = np.where((grid.lon[:-1] > 160) & (grid.lon[1:] < -160))[0]
             if len(indices)>2:
-                warnings.warn(
-                        "Longitude values in field " + name + " are not monotonically increasing.",
-                        FieldSetWarning,
-                        stacklevel=3,
-                    )
+                FieldSet.raiseLonLatWarning("Longitude", name)
             else:
                 for index in indices:
-                    auxiliaryArray[index+1:-1] = auxiliaryArray[index+1:-1] + 360
+                    auxiliaryArray[index+1:-1] += 360
                                     
-                if np.any(auxiliaryArray[:-1] >= auxiliaryArray[1:]):
-                        warnings.warn(
-                            "Longitude values in field " + name + " are not monotonically increasing.",
-                            FieldSetWarning,
-                            stacklevel=3,
-                        )
+                if np.any(auxiliaryArray[:-1] > auxiliaryArray[1:]):
+                    FieldSet.raiseLonLatWarning("Longitude", name)
         else:
             for array in grid.lon:  
                 auxiliaryArray = array.copy()
-                indices = np.where((array[:-1] > 160) & (array[1:] < -160))[0]
+                indices = np.where((array[:-1] > 160) & (array[1:] < -160))[0] # find indices when 180° meridian is crossed 
                 if len(indices)>2:
-                    warnings.warn(
-                            "Longitude values in field " + name + " are not monotonically increasing.",
-                            FieldSetWarning,
-                            stacklevel=3,
-                        )
+                    FieldSet.raiseLonLatWarning("Longitude", name)
                 else:
                     for index in indices:
                         auxiliaryArray[index+1:] = auxiliaryArray[index+1:] + 360
                                         
                     if np.any(auxiliaryArray[:-1] > auxiliaryArray[1:]):  # strict inequality to avoid rounding errors?
-                        warnings.warn(
-                            "Longitude values in field " + name + " are not monotonically increasing.",
-                            FieldSetWarning,
-                            stacklevel=3,
-                        )
-                        break
-                        #print(*array)
-                        #debugArray= np.where((auxiliaryArray[:-1] > auxiliaryArray[1:]))[0]   # should not have the same value?
-                        # print(debugArray)
-                        # print(auxiliaryArray[debugArray[0]])
-                        # print(auxiliaryArray[debugArray[0]+1])
-                        # print(array[debugArray[0]])
-                        # print(array[debugArray[0]+1])
-                        # print(array[:10])
-                        #print(auxiliaryArray[debugArray[0]+2])
-                        #print(bla)
-                        #print(*grid.lon[0])
-                    #print("aux")
-                    #print(*auxiliaryArray)
-                    
-                        #print(grid.lon.shape)
-        if np.ndim(grid.lat) == 1:
-            if np.any(grid.lat[:-1] >= grid.lat[1:]):
-                warnings.warn(
-                    "Latitude values in field " + name + " are not monotonically increasing.",
-                    FieldSetWarning,
-                    stacklevel=3,
-                )
-        else:
-            #print(grid.lat[:,1])
-            for array in grid.lat.T:
-                #print(*array)
-                if np.any(array[:-1] > array[1:]):  
-                    warnings.warn(
-                        "Latitude values in field " + name + " are not monotonically increasing.",
-                        FieldSetWarning,
-                        stacklevel=3,
-                    )
-                    break
+                        FieldSet.raiseLonLatWarning("Longitude", name)
+                        break  # Stop checking after warning
                         
-                    #print(grid.lon.shape)
-                    #print(grid.lon[0])
+        if np.ndim(grid.lat) == 1:
+            if np.any(grid.lat[:-1] > grid.lat[1:]):
+                FieldSet.raiseLonLatWarning("Latitude", name)
+        else:
+            for array in grid.lat.T:
+                if np.any(array[:-1] > array[1:]):  
+                    FieldSet.raiseLonLatWarning("Latitude", name)
+                    break # Stop checking after warning
+                   
+    @staticmethod
+    def raiseLonLatWarning(direction: str, name: str):
+        warnings.warn(
+            direction + " values in field " + name + " are not monotonically increasing.",
+            FieldSetWarning,
+            stacklevel=4,
+        )
 
-# to do: check why lon warning, and Übergang 180, auch für lat
+# to do: latitude test if the poles are included
