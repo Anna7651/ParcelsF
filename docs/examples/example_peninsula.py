@@ -80,8 +80,6 @@ def peninsula_fieldset(xdim, ydim, mesh="flat", grid_type="A"):
     lon = La / 1852.0 / 60.0 if mesh == "spherical" else La
     lat = Wa / 1852.0 / 60.0 if mesh == "spherical" else Wa
 
-    lon[10]=1
-
     data = {"U": U, "V": V, "P": P}
     dimensions = {"lon": lon, "lat": lat}
 

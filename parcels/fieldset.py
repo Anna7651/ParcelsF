@@ -1595,7 +1595,7 @@ class FieldSet:
                 FieldSet.raise_lon_lat_warning("Longitude", name)
             else:
                 for index in indices_cross_180:
-                    auxiliary_longitude[index+1:-1] += 360
+                    auxiliary_longitude[index+1:] += 360
                                     
                 if np.any(auxiliary_longitude[:-1] > auxiliary_longitude[1:]):
                     FieldSet.raise_lon_lat_warning("Longitude", name)
@@ -1607,7 +1607,7 @@ class FieldSet:
                     FieldSet.raise_lon_lat_warning("Longitude", name)
                 else:
                     for index in indices_cross_180:
-                        auxiliary_longitude[index+1:] = auxiliary_longitude[index+1:] + 360
+                        auxiliary_longitude[index+1:] += 360
                                         
                     if np.any(auxiliary_longitude[:-1] > auxiliary_longitude[1:]):  # strict inequality to avoid rounding errors?
                         FieldSet.raise_lon_lat_warning("Longitude", name)
