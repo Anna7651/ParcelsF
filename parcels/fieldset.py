@@ -1617,10 +1617,8 @@ class FieldSet:
             if np.any(grid.lat[:-1] > grid.lat[1:]):
                 FieldSet.raise_lon_lat_warning("Latitude", name)
         else:
-            for latitude in grid.lat.T:
-                if np.any(latitude[:-1] > latitude[1:]):  
-                    FieldSet.raise_lon_lat_warning("Latitude", name)
-                    break # Stop checking after warning
+            if np.any(grid.lat[:-1,:] > grid.lat[1:,:]):
+                FieldSet.raise_lon_lat_warning("Latitude", name)
                    
     @staticmethod
     def raise_lon_lat_warning(direction: str, name: str):

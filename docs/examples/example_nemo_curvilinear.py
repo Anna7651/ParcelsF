@@ -124,7 +124,6 @@ def main(args=None):
     args = p.parse_args(args)
 
     outfile = "nemo_particles"
-    print("test")
 
     run_nemo_curvilinear(args.mode, outfile)
 
